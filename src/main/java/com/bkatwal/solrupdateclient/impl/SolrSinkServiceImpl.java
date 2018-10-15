@@ -2,10 +2,10 @@ package com.bkatwal.solrupdateclient.impl;
 
 import static org.apache.solr.common.SolrException.ErrorCode.SERVER_ERROR;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.bkatwal.solrupdateclient.api.SolrSinkService;
 import com.bkatwal.solrupdateclient.util.SolrAtomicUpdateOperations;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
 import org.apache.solr.client.solrj.response.UpdateResponse;
@@ -22,7 +23,9 @@ import org.apache.solr.common.SolrInputDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** @author "Bikas Katwal" 06/09/18 */
+/**
+ * @author "Bikas Katwal" 06/09/18
+ */
 public class SolrSinkServiceImpl implements SolrSinkService {
 
   private static final long serialVersionUID = -3642253074708905878L;
@@ -36,7 +39,7 @@ public class SolrSinkServiceImpl implements SolrSinkService {
   public SolrSinkServiceImpl(final String solrZkHostPort, final int commitWithinMs) {
     List<String> zkHosts = Arrays.asList(solrZkHostPort.split(","));
 
-    CloudSolrClient.Builder builder = new CloudSolrClient.Builder().withZkHost(zkHosts);
+    CloudSolrClient.Builder builder = new CloudSolrClient.Builder(zkHosts, Optional.empty());
     solrClient = builder.build();
     ((CloudSolrClient) solrClient).setZkClientTimeout(ZK_CLIENT_TIMEOUT);
     ((CloudSolrClient) solrClient).setZkConnectTimeout(ZK_CLIENT_TIMEOUT);
@@ -90,7 +93,8 @@ public class SolrSinkServiceImpl implements SolrSinkService {
 
     ObjectMapper objectMapper = new ObjectMapper();
     Map<String, Object> map =
-        objectMapper.convertValue(record, new TypeReference<Map<String, Object>>() {});
+        objectMapper.convertValue(record, new TypeReference<Map<String, Object>>() {
+        });
     return updateSingleDoc(collection, map);
   }
 
@@ -111,7 +115,8 @@ public class SolrSinkServiceImpl implements SolrSinkService {
   public <T> UpdateResponse updateBatchDoc(String collection, Collection<T> records) {
     ObjectMapper objectMapper = new ObjectMapper();
     List<Map<String, Object>> maps =
-        objectMapper.convertValue(records, new TypeReference<List<Map<String, Object>>>() {});
+        objectMapper.convertValue(records, new TypeReference<List<Map<String, Object>>>() {
+        });
     return updateBatchDoc(collection, maps);
   }
 
