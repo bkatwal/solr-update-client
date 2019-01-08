@@ -1,4 +1,4 @@
-### GitLab [![build status](https://gitlab.com/bikas.katwal10/solr-update-client/badges/master/build.svg)](https://gitlab.com/bikas.katwal10/solr-update-client/master)
+### GitLab [![build status](https://gitlab.com/bikas.katwal10/solr-update-client/badges/master/build.svg)](https://gitlab.com/bikas.katwal10/solr-update-client/pipelines)
 
 # solr-update-client
 Utility project to support update in solr. Uses solr client. Below operations are supported:
